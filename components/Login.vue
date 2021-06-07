@@ -5,15 +5,18 @@
       <h3 class="font-bold text-base text-gray-700">Welcome to your Dashboard</h3>
     </div>
     <div class="px-4 py-5 sm:p-6">
+      <div v-if="error" class="bg-red-100 py-3 mb-4 text-xs text-center text-red-700"><span class="font-bold">Login Unsuccessful</span>. Please check your credentials</div>
       <div>
         <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
         <div class="mt-1">
           <input
             id="email"
             v-model="formData.email"
+            :disabled="submitting"
             type="email"
             name="email"
             autofocus="autofocus"
+            :class="{ 'opacity-30': submitting }"
             class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
             placeholder="you@example.com"
           />
@@ -26,8 +29,10 @@
           <input
             id="password"
             v-model="formData.password"
+            :disabled="submitting"
             type="password"
             name="password"
+            :class="{ 'opacity-30': submitting }"
             class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
             placeholder="your password"
           />
@@ -54,8 +59,11 @@
             focus:outline-none
             focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
           "
+          :class="{ 'hover:bg-opacity-50 bg-opacity-50': submitting }"
+          :disabled="submitting"
         >
-          Log In
+          <span v-if="submitting">Please wait...</span>
+          <span v-else>Log In</span>
         </button>
       </div>
     </div>
@@ -68,9 +76,11 @@ export default {
   data() {
     return {
       submitted: false,
+      submitting: false,
+      error: undefined,
       formData: {
-        email: '',
-        password: '',
+        email: 'vedovelli@gmail.com',
+        password: '123456789',
       },
     };
   },
@@ -78,10 +88,17 @@ export default {
     async login() {
       this.submitted = true;
       if (this.formData.email !== '' && this.formData.password !== '') {
-        await axios.post('/api/login');
+        try {
+          this.submitting = true;
+          await axios.post('/api/login', this.formData);
+          this.formData.email = '';
+          this.formData.password = '';
+          this.error = undefined;
+        } catch (error) {
+          this.error = error;
+        }
         this.submitted = false;
-        this.formData.email = '';
-        this.formData.password = '';
+        this.submitting = false;
       }
     },
   },
