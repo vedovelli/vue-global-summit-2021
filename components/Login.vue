@@ -79,8 +79,8 @@ export default {
       submitting: false,
       error: undefined,
       formData: {
-        email: 'vedovelli@gmail.com',
-        password: '123456789',
+        email: '',
+        password: '',
       },
     };
   },
