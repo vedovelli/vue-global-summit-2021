@@ -1,4 +1,3 @@
-<!-- This example requires Tailwind CSS v2.0+ -->
 <template>
   <form class="w-96 bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200" @submit.prevent="login">
     <div class="px-4 py-3 sm:px-6">
